@@ -68,6 +68,23 @@ local plugins = {
   {
     "mfussenegger/nvim-dap",
   },
+  {
+    "saecki/crates.nvim",
+    ft = {"rust", "toml"},
+    config = function ()
+      local crates = require("crates")
+      crates.setup(opts)
+      crates.show()
+    end
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function ()
+      local M = require("plugins.configs.cmp")
+      table.insert(M.sources, {name = "crates"})
+      return M
+    end
+  },
 
   -- To make a plugin not be loaded
   {
