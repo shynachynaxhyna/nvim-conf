@@ -1,4 +1,4 @@
-local overrides = require("custom.configs.overrides")
+local overrides = require "custom.configs.overrides"
 
 ---@type NvPluginSpec[]
 local plugins = {
@@ -24,7 +24,7 @@ local plugins = {
   -- override plugin configs
   {
     "williamboman/mason.nvim",
-    opts = overrides.mason
+    opts = overrides.mason,
   },
 
   {
@@ -59,7 +59,7 @@ local plugins = {
     ft = "rust",
     dependencies = "neovim/nvim-lspconfig",
     opts = function()
-      return require("custom.configs.rust-tools")
+      return require "custom.configs.rust-tools"
     end,
     config = function(_, opts)
       require("rust-tools").setup(opts)
@@ -70,35 +70,51 @@ local plugins = {
   },
   {
     "saecki/crates.nvim",
-    ft = {"rust", "toml"},
-    config = function ()
-      local crates = require("crates")
+    ft = { "rust", "toml" },
+    config = function()
+      local crates = require "crates"
       crates.setup(opts)
       crates.show()
-    end
+    end,
   },
   {
     "hrsh7th/nvim-cmp",
-    opts = function ()
-      local M = require("plugins.configs.cmp")
-      table.insert(M.sources, {name = "crates"})
+    opts = function()
+      local M = require "plugins.configs.cmp"
+      table.insert(M.sources, { name = "crates" })
       return M
-    end
+    end,
   },
 
-  -- To make a plugin not be loaded
+  -- Additional
   {
     "NvChad/nvim-colorizer.lua",
-    enabled = true
+    enabled = true,
   },
-
+  {
+    "zbirenbaum/copilot.lua",
+    -- Lazy load when event occurs. Events are triggered
+    -- as mentioned in:
+    -- https://vi.stackexchange.com/a/4495/20389
+    event = "InsertEnter",
+    -- You can also have it load at immediately at
+    -- startup by commenting above and uncommenting below:
+    -- lazy = false
+    opts = overrides.copilot,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup()
+    end,
+  },
+  {
+    "mg979/vim-visual-multi",
+    lazy = false,
+  },
   -- All NvChad plugins are lazy-loaded by default
   -- For a plugin to be loaded, you will need to set either `ft`, `cmd`, `keys`, `event`, or set `lazy = false`
   -- If you want a plugin to load on startup, add `lazy = false` to a plugin spec, for example
-  -- {
-  --   "mg979/vim-visual-multi",
-  --   lazy = false,
-  -- }
 }
 
 return plugins
