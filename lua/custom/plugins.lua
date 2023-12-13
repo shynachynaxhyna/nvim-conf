@@ -79,7 +79,18 @@ local plugins = {
   },
   {
     "hrsh7th/nvim-cmp",
-    opts = function()
+    dependencies = {
+      { "roobert/tailwindcss-colorizer-cmp.nvim", config = true },
+    },
+    opts = function(_, opts)
+      -- Tailwindcss
+      local format_kinds = opts.formatting.format
+      opts.formatting.format = function (entry ,item)
+        format_kinds(entry, item)
+        return require("tailwindcss-colorizer-cmp").formatter(entry, item)
+      end
+
+      -- Rust crates
       local M = require "plugins.configs.cmp"
       table.insert(M.sources, { name = "crates" })
       return M
@@ -90,6 +101,11 @@ local plugins = {
   {
     "NvChad/nvim-colorizer.lua",
     enabled = true,
+    opts = {
+      user_default_options = {
+        tailwind = true,
+      },
+    },
   },
   {
     "zbirenbaum/copilot.lua",
